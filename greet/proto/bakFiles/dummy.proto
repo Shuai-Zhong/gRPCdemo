@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package greet;
+
+option go_package = "go_code/gRPCudemy/greet/proto";
+
+message Dummy {
+    uint32 id = 1;
+}
+
+//protoc -Igreet/proto --go_out=. --go_opt=module=go_code/gRPCudemy --go-grpc_out=. --go-grpc_opt=module=go_code/gRPCudemy  greet/proto/dummy.proto
+//protoc -I${PROJECT}/proto --go_opt=module=${YOUR_MODULE} --go_out=. ${PROJECT}/proto/*.proto
+
+service DummyService{
+
+}
