@@ -14,7 +14,7 @@ func (s *Server) PrimesApi(in *pb.PrimesRequest, stream pb.GreetService_PrimesAp
 			stream.Send(&pb.PrimesResponse{
 				Result: k,
 			})
-			in.PrimesNum = in.PrimesNum / k
+			in.PrimesNum /= k
 		} else {
 			k = k + 1
 		}
