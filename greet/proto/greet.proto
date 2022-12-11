@@ -40,6 +40,8 @@ service GreetService{
     //we can have one or more responses from this RPC endpoint
     rpc GreetManyTimes(GreetRequest) returns(stream GreetResponse);
     rpc PrimesApi(PrimesRequest) returns(stream PrimesResponse);
+    //Client Streaming
+    rpc LongGreet(stream GreetRequest) returns(GreetResponse);
 }
 
 // service SumService{
