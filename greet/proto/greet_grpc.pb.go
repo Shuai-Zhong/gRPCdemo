@@ -31,6 +31,7 @@ type GreetServiceClient interface {
 	PrimesApi(ctx context.Context, in *PrimesRequest, opts ...grpc.CallOption) (GreetService_PrimesApiClient, error)
 	//Client Streaming
 	LongGreet(ctx context.Context, opts ...grpc.CallOption) (GreetService_LongGreetClient, error)
+	AvgApi(ctx context.Context, opts ...grpc.CallOption) (GreetService_AvgApiClient, error)
 }
 
 type greetServiceClient struct {
@@ -157,6 +158,40 @@ func (x *greetServiceLongGreetClient) CloseAndRecv() (*GreetResponse, error) {
 	return m, nil
 }
 
+func (c *greetServiceClient) AvgApi(ctx context.Context, opts ...grpc.CallOption) (GreetService_AvgApiClient, error) {
+	stream, err := c.cc.NewStream(ctx, &GreetService_ServiceDesc.Streams[3], "/greet.GreetService/AvgApi", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &greetServiceAvgApiClient{stream}
+	return x, nil
+}
+
+type GreetService_AvgApiClient interface {
+	Send(*AvgRequest) error
+	CloseAndRecv() (*AvgResponse, error)
+	grpc.ClientStream
+}
+
+type greetServiceAvgApiClient struct {
+	grpc.ClientStream
+}
+
+func (x *greetServiceAvgApiClient) Send(m *AvgRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *greetServiceAvgApiClient) CloseAndRecv() (*AvgResponse, error) {
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	m := new(AvgResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // GreetServiceServer is the server API for GreetService service.
 // All implementations must embed UnimplementedGreetServiceServer
 // for forward compatibility
@@ -170,6 +205,7 @@ type GreetServiceServer interface {
 	PrimesApi(*PrimesRequest, GreetService_PrimesApiServer) error
 	//Client Streaming
 	LongGreet(GreetService_LongGreetServer) error
+	AvgApi(GreetService_AvgApiServer) error
 	mustEmbedUnimplementedGreetServiceServer()
 }
 
@@ -191,6 +227,9 @@ func (UnimplementedGreetServiceServer) PrimesApi(*PrimesRequest, GreetService_Pr
 }
 func (UnimplementedGreetServiceServer) LongGreet(GreetService_LongGreetServer) error {
 	return status.Errorf(codes.Unimplemented, "method LongGreet not implemented")
+}
+func (UnimplementedGreetServiceServer) AvgApi(GreetService_AvgApiServer) error {
+	return status.Errorf(codes.Unimplemented, "method AvgApi not implemented")
 }
 func (UnimplementedGreetServiceServer) mustEmbedUnimplementedGreetServiceServer() {}
 
@@ -309,6 +348,32 @@ func (x *greetServiceLongGreetServer) Recv() (*GreetRequest, error) {
 	return m, nil
 }
 
+func _GreetService_AvgApi_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(GreetServiceServer).AvgApi(&greetServiceAvgApiServer{stream})
+}
+
+type GreetService_AvgApiServer interface {
+	SendAndClose(*AvgResponse) error
+	Recv() (*AvgRequest, error)
+	grpc.ServerStream
+}
+
+type greetServiceAvgApiServer struct {
+	grpc.ServerStream
+}
+
+func (x *greetServiceAvgApiServer) SendAndClose(m *AvgResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *greetServiceAvgApiServer) Recv() (*AvgRequest, error) {
+	m := new(AvgRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // GreetService_ServiceDesc is the grpc.ServiceDesc for GreetService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -339,6 +404,11 @@ var GreetService_ServiceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "LongGreet",
 			Handler:       _GreetService_LongGreet_Handler,
+			ClientStreams: true,
+		},
+		{
+			StreamName:    "AvgApi",
+			Handler:       _GreetService_AvgApi_Handler,
 			ClientStreams: true,
 		},
 	},

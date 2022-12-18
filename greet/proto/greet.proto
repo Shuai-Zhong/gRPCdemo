@@ -19,6 +19,10 @@ message PrimesRequest{
     int64 PrimesNum = 1;
 }
 
+message AvgRequest{
+    float AvgRequestNum = 1;
+}
+
 message GreetResponse{
     string result = 1;
 }
@@ -31,6 +35,12 @@ message PrimesResponse{
     int64 result = 1;
 } 
 
+message AvgResponse{
+    float result = 1;
+}
+
+
+
 
 service GreetService{
     //Unary
@@ -42,6 +52,7 @@ service GreetService{
     rpc PrimesApi(PrimesRequest) returns(stream PrimesResponse);
     //Client Streaming
     rpc LongGreet(stream GreetRequest) returns(GreetResponse);
+    rpc AvgApi(stream AvgRequest) returns(AvgResponse);
 }
 
 // service SumService{
