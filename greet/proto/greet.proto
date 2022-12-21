@@ -53,6 +53,8 @@ service GreetService{
     //Client Streaming
     rpc LongGreet(stream GreetRequest) returns(GreetResponse);
     rpc AvgApi(stream AvgRequest) returns(AvgResponse);
+    //Bi-Directional Streaming
+    rpc GreetEveryone(stream GreetRequest) returns(stream GreetResponse);
 }
 
 // service SumService{

@@ -28,7 +28,7 @@ func main() {
 		c := pb.NewGreetServiceClient(conn)
 		var functionSelect int64
 		fmt.Println("choose function.")
-		fmt.Println("1:doGreet 2:doSum 3:doGreetManyTimes 4:doPrimesApi 5:doLongGreet 6:doAvgApi 7:endfunction")
+		fmt.Println("1:doGreet 2:doSum 3:doGreetManyTimes 4:doPrimesApi 5:doLongGreet 6:doAvgApi 7:dogreetEveryone 8:endfunction")
 		fmt.Scanln(&functionSelect)
 		if functionSelect == 1 {
 			doGreet(c)
@@ -43,6 +43,8 @@ func main() {
 		} else if functionSelect == 6 {
 			doAvgApi(c)
 		} else if functionSelect == 7 {
+			doGreetEveryone(c)
+		} else if functionSelect == 8 {
 			return
 		}
 
